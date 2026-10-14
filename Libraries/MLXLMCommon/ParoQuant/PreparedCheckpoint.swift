@@ -1,6 +1,5 @@
 import Foundation
 import MLX
-import os
 
 private let logger = MLXLogger(label: "paroquant")
 

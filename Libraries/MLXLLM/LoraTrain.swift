@@ -80,14 +80,14 @@ public enum LoRATrainError: LocalizedError, Equatable {
     }
 
     /// A sample encodes to fewer than two tokens, so it has nothing to predict.
-    case sampleTooShort(dataset: Dataset, index: Int, tokenCount: Int)
+    case sampleTooShort(kind: Dataset, index: Int, tokenCount: Int)
 
     public var errorDescription: String? {
         switch self {
-        case .sampleTooShort(let dataset, let index, let tokenCount):
+        case .sampleTooShort(let kind, let index, let tokenCount):
             return String(
                 localized:
-                    "LoRA \(dataset.rawValue) sample \(index) encodes to \(tokenCount) token(s); each sample needs at least 2."
+                    "LoRA \(kind.rawValue) sample \(index) encodes to \(tokenCount) token(s); each sample needs at least 2."
             )
         }
     }
@@ -244,13 +244,13 @@ public enum LoRATrain {
 
     /// Each sample must encode to at least 2 tokens: one to read and one to predict.
     static func checkSamples(
-        _ dataset: [String], _ name: LoRATrainError.Dataset, tokenizer: Tokenizer
+        _ samples: [String], _ kind: LoRATrainError.Dataset, tokenizer: Tokenizer
     ) throws {
-        for (index, text) in dataset.enumerated() {
+        for (index, text) in samples.enumerated() {
             let tokenCount = tokenizer.encode(text: text).count
             if tokenCount < 2 {
                 throw LoRATrainError.sampleTooShort(
-                    dataset: name, index: index, tokenCount: tokenCount)
+                    kind: kind, index: index, tokenCount: tokenCount)
             }
         }
     }

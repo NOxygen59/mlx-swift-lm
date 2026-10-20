@@ -26,14 +26,13 @@ struct LoRATrainDataTests {
     }
 
     @Test func `a one-token training sample throws with its index`() {
-        #expect(throws: LoRATrainError.sampleTooShort(dataset: .train, index: 1, tokenCount: 1)) {
+        #expect(throws: LoRATrainError.sampleTooShort(kind: .train, index: 1, tokenCount: 1)) {
             try Self.train(["two words", "one", "three more words"], validate: ["fine here"])
         }
     }
 
     @Test func `a short validation sample throws`() {
-        #expect(throws: LoRATrainError.sampleTooShort(dataset: .validate, index: 0, tokenCount: 0))
-        {
+        #expect(throws: LoRATrainError.sampleTooShort(kind: .validate, index: 0, tokenCount: 0)) {
             try Self.train(["two words"], validate: [""])
         }
     }
@@ -43,7 +42,7 @@ struct LoRATrainDataTests {
     }
 
     @Test func `the error names the dataset and sample`() {
-        let error = LoRATrainError.sampleTooShort(dataset: .train, index: 3, tokenCount: 1)
+        let error = LoRATrainError.sampleTooShort(kind: .train, index: 3, tokenCount: 1)
         #expect(error.localizedDescription.contains("train sample 3"))
     }
 }

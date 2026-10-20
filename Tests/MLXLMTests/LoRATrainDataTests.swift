@@ -41,6 +41,23 @@ struct LoRATrainDataTests {
         try Self.train(["two words", "three more words"], validate: ["fine here"])
     }
 
+    #if os(macOS)
+    /// `evaluate` skips `checkSamples`, so a short sample reaches the precondition in `LoRABatchIterator`.
+    @Test func `evaluate stops at the precondition for a short sample`() async throws {
+        let result = await #expect(
+            processExitsWith: .failure, observing: [\.standardErrorContent]
+        ) {
+            _ = LoRATrain.evaluate(
+                model: Linear(1, 1, bias: false), dataset: ["one"],
+                loss: { _, _, _, _ in (MLXArray(0.0), MLXArray(1)) },
+                tokenizer: PseudoWordTokenizer(), batchSize: 1, batchCount: 1)
+        }
+        let standardError = String(
+            decoding: try #require(result).standardErrorContent, as: UTF8.self)
+        #expect(standardError.contains("LoRA batch has no sample of 2 or more tokens"))
+    }
+    #endif
+
     @Test func `the error names the dataset and sample`() {
         let error = LoRATrainError.sampleTooShort(kind: .train, index: 3, tokenCount: 1)
         #expect(error.localizedDescription.contains("train sample 3"))

@@ -8,8 +8,9 @@ let package = Package(
     name: "mlx-swift-lm",
     platforms: [
         .macOS(.v14),
-        .iOS(.v17),
-        .tvOS(.v17),
+        // ipad-ios16 : iOS 16 (TrollStore, iPad Pro M1) ; voir IPAD-IOS16.md.
+        .iOS(.v16),
+        .tvOS(.v16),
         .visionOS(.v1),
     ],
     products: [
@@ -58,10 +59,11 @@ let package = Package(
             description:
                 "Enables the MLXLanguageModel adapter for Apple's FoundationModels framework. Disabling removes the MLXLanguageModel / MLXLanguageModel.Executor types."
         ),
-        .default(enabledTraits: ["FoundationModelsIntegration"]),
+        .default(enabledTraits: []),
     ],
     dependencies: [
-        .package(url: "https://github.com/ml-explore/mlx-swift", .upToNextMinor(from: "0.32.3")),
+        // ipad-ios16 : fork de mlx-swift rendu compatible iOS 16 (bfloat logiciel dans les noyaux Metal).
+        .package(url: "https://github.com/NOxygen59/mlx-swift", branch: "ipad-ios16"),
         // 602.0.0 floor: swift.org publishes signed prebuilt swift-syntax artifacts only for
         // >= 602 tags on current toolchains; a 600.x/601.x resolution falls back to the full
         // source compile of swift-syntax.

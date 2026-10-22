@@ -5,6 +5,7 @@
 | Fichier | Changement |
 |---|---|
 | `Package.swift` | `.iOS(.v16)` / `.tvOS(.v16)` ; trait `FoundationModelsIntegration` coupé par défaut (iOS 27+) ; dépend du fork `NOxygen59/mlx-swift` branche `ipad-ios16` (bfloat logiciel) |
+| `Libraries/MLXLMCommon/Load.swift` | chargement des poids (file Dispatch) dans `withError` : une erreur MLX devient une erreur Swift au lieu d'arrêter l'app |
 | `Libraries/MLXLMCommon/Utilities/GenerationWorker.swift` | `DispatchSerialQueue` (iOS 17+) → `QueueSerialExecutor` maison sur `DispatchQueue` |
 
 Compile : `xcodebuild -scheme MLXVLM -destination 'generic/platform=iOS Simulator' build`.

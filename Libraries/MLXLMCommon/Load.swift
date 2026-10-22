@@ -427,11 +427,15 @@ public func loadWeights(
         DispatchQueue.global(qos: .userInitiated).async {
             continuation.resume(
                 with: Result {
-                    try loadWeights(
-                        modelDirectory: modelDirectory, model: model.consume(),
-                        quantization: quantization,
-                        perLayerQuantization: perLayerQuantization,
-                        weightFileSelection: weightFileSelection)
+                    // ipad-ios16 : la file Dispatch perd le gestionnaire d'erreurs MLX de la tâche appelante ;
+                    // sans lui, une erreur MLX (mémoire, noyau Metal) arrête l'app. Ici elle devient un `throw`.
+                    try withError {
+                        try loadWeights(
+                            modelDirectory: modelDirectory, model: model.consume(),
+                            quantization: quantization,
+                            perLayerQuantization: perLayerQuantization,
+                            weightFileSelection: weightFileSelection)
+                    }
                 })
         }
     }
